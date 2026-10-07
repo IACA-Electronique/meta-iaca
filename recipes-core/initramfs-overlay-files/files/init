@@ -1,0 +1,54 @@
+#!/bin/sh
+
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+
+exec </dev/console >/dev/console 2>&1
+
+echo "[***] IACA OVERLAY INITRAMFS [***]"
+
+ROOTDEV=""
+
+for arg in $(cat /proc/cmdline); do
+    case "$arg" in
+        root=*)
+            ROOTDEV="${arg#root=}"
+            ;;
+    esac
+done
+
+if [ -z "$ROOTDEV" ]; then
+    echo "No root= found in /proc/cmdline"
+    echo "Dropping to shell"
+    exec /bin/sh
+fi
+
+echo "Root device from cmdline: $ROOTDEV"
+
+export ROOTMNT=/root
+
+mkdir -p "$ROOTMNT"
+
+mount "$ROOTDEV" "$ROOTMNT"
+
+if [ $? -ne 0 ]; then
+    echo "Failed to mount $ROOTDEV"
+    echo "Available block devices:"
+    ls -l /dev/mmcblk* 2>/dev/null || true
+    echo "Dropping to shell"
+    exec /bin/sh
+fi
+
+./iaca-splash.sh
+./overlay.sh
+
+export ROOTMNT=/overlay/root
+
+mount --move /proc "${ROOTMNT}/proc"
+mount --move /sys "${ROOTMNT}/sys"
+mount --move /dev "${ROOTMNT}/dev"
+
+echo "Switching to real rootfs"
+
+exec switch_root "/overlay/root" /sbin/init

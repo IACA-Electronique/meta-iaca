@@ -1,0 +1,34 @@
+{
+  "tag": "",
+  "part_uuid": "0x07bcd46a",
+  "content": [
+    {
+      "index": 0,
+      "fs_type": "fat",
+      "data_file": "0",
+      "free_space_size": 0,
+      "size": 256000000
+    },
+    {
+      "index": 1,
+      "fs_type": "fat",
+      "data_file": "1",
+      "free_space_size": 0,
+      "size": 256000000
+    },
+    {
+      "index": 2,
+      "fs_type": "ext4",
+      "data_file": "2",
+      "free_space_size": 0,
+      "size": 3537047020
+    },
+    {
+      "index": 3,
+      "fs_type": "ext4",
+      "data_file": "2",
+      "free_space_size": 0,
+      "size": 3537047020
+    }
+  ]
+}

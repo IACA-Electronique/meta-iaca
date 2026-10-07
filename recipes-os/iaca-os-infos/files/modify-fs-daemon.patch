@@ -1,0 +1,51 @@
+Subject: [PATCH] Yocto update
+---
+Index: usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh b/src/usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh
+--- a/usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh	(revision 7baf64434054d735e896a37b4e735868cd78b8b5)
++++ b/usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh	(date 1791379259350)
+@@ -10,22 +10,22 @@
+
+ case "$1" in
+     start)
+-        if ! systemctl start "$FS_DAEMON_SERVICE_NAME"; then
++        if ! service "$FS_DAEMON_SERVICE_NAME" start; then
+             return 2
+         fi
+         ;;
+     stop)
+-        if ! systemctl stop "$FS_DAEMON_SERVICE_NAME"; then
++        if ! service "$FS_DAEMON_SERVICE_NAME" stop; then
+             return 2
+         fi
+         ;;
+     enable)
+-        if ! systemctl enable "$FS_DAEMON_SERVICE_NAME" > /dev/null; then
++        if ! update-rc.d "$FS_DAEMON_SERVICE_NAME" enable > /dev/null; then
+             return 2
+         fi
+         ;;
+     disable)
+-        if ! systemctl disable "$FS_DAEMON_SERVICE_NAME" > /dev/null; then
++        if ! update-rc.d "$FS_DAEMON_SERVICE_NAME" disable > /dev/null; then
+             return 2
+         fi
+         ;;
+Index: usr/local/iaca/os/exec/commands/infos/vars
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/usr/local/iaca/os/exec/commands/infos/vars b/src/usr/local/iaca/os/exec/commands/infos/vars
+--- a/usr/local/iaca/os/exec/commands/infos/vars	(revision 7baf64434054d735e896a37b4e735868cd78b8b5)
++++ b/usr/local/iaca/os/exec/commands/infos/vars	(date 1791377873093)
+@@ -1,4 +1,4 @@
+-export FS_DAEMON_SERVICE_NAME=iaca-infos-fs-daemon.service
++export FS_DAEMON_SERVICE_NAME=iaca-os-infos-daemon
+
+ export DATA_DIR=/mnt/system
+ export FIRMWARE_VERSION_DATA_FILE=${DATA_DIR}/firmware/version

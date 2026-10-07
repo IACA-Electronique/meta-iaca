@@ -1,0 +1,120 @@
+#!/bin/sh
+#
+# iaca-os-infos-daemon.sysvinit    Startup script for IACA OS INFOS DAEMON Service
+#
+
+### BEGIN INIT INFO
+# Provides:          iaca-os-infos-daemon.sysvinit
+# Required-Start:    $syslog $network
+# Required-Stop:     $syslog $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: IACA OS INFOS DAEMON Service
+# Description:       Rust-based daemon to map i2c board manager to filesystem
+### END INIT INFO
+
+# Configuration
+PROG="/usr/sbin/iaca-os-infos-daemon"
+PIDFILE="/var/run/iaca-os-infos-daemon.pid"
+NAME="iaca-os-infos-daemon"
+
+# I2C Configuration (used by program)
+export I2C_BUS_ADDRESS=0x01
+export I2C_SLAVE_ADDRESS=0x3a
+
+# Ensure PID file directory exists
+[ -d /var/run ] || install -d -m 0755 /var/run
+
+# Check if executable exists
+[ -x "$PROG" ] || exit 0
+
+# Define LSB log functions
+RETVAL=0
+
+start() {
+    echo "Starting $NAME.."
+    
+    # Check if already running
+    if [ -f "$PIDFILE" ]; then
+        PID=$(cat "$PIDFILE")
+        if ps -p "$PID" > /dev/null 2>&1; then
+            echo "already running (PID: $PID)"
+            return 0
+        else
+            # Stale PID file, remove it
+            rm -f "$PIDFILE"
+        fi
+    fi
+    
+    # Start the daemon
+    nohup "$PROG" > /dev/null 2>&1 &
+    PID=$!
+    RETVAL=$?
+    [ $RETVAL -eq 0 ] && echo "$PID" > "$PIDFILE"
+    echo "$NAME started."
+}
+
+stop() {
+    if [ -f "$PIDFILE" ]; then
+        echo "Stopping $NAME.. "
+        pid=$(cat $PIDFILE)
+        if [ -n "$pid" ]; then
+            kill $pid
+            RETVAL=$?
+            [ $RETVAL -eq 0 ] && rm -f "$PIDFILE"
+            echo "$NAME stopped."
+            return $RETVAL
+        else
+            return 0
+        fi
+    fi
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+reload() {
+    echo "Reloading $NAME: Not supported"
+    return 0
+}
+
+status() {
+    local pidfile="$PIDFILE"
+    local name="$NAME"
+    local pid=$(cat $PIDFILE)
+    
+    if [ -n "$pidfile" ] && [ -f "$pidfile" ]; then
+        echo "$name (pid $pid) is running..."
+        return 0
+    else
+        echo "$name is stopped"
+        return 3
+    fi
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        restart
+        ;;
+    reload)
+        reload
+        ;;
+    status)
+        status
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+        ;;
+esac
+
+exit $RETVAL
