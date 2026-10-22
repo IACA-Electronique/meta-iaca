@@ -15,7 +15,7 @@ EXTRA_IMAGE_FEATURES += " \
 IMAGE_INSTALL:append = " kernel-modules"
 IMAGE_INSTALL:append = " bash raspi-utils util-linux hello-rust colors i2c-tools"
 IMAGE_INSTALL:append = " iaca-watchdog iaca-os-exec iaca-os-infos iaca-os-infos-daemon"
-
+IMAGE_DEPENDS:append = " overlay-initramfs-image"
 
 # Machine-specific IMAGE_CLASSES and IMAGE_FSTYPES
 python __anonymous() {
