@@ -4,6 +4,16 @@ This layer provides custom image types, classes, and recipes for IACA OS builds.
 
 * **Maintainer**: Julien FAURE <julien.faure@iaca-electronique.com>
 
+## ✅ Supported devices
+
+| Device name                                                                                | Status               | `MACHINE`           |
+|--------------------------------------------------------------------------------------------|----------------------|---------------------|
+| IACA-BOX revB - CM5                                                                        | ✅ Supported, Tested | `raspberrypi5`      |
+| IACA-BOX revB - CM4                                                                        | ✅ Supported         | `raspberrypi4`      |
+| [Banana Pi BPI-M2 Ultra](https://docs.banana-pi.org/en/BPI-M2_Ultra/BananaPi_BPI-M2_Ultra) | ✅ Supported, Tested | `bananapi-m2-ultra` |
+
+___
+
 ## IACA image format
 
 To generate a standard IACA image, add the following configuration to `local.conf`:
