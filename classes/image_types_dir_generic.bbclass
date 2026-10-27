@@ -1,0 +1,83 @@
+# Custom image type: dir_generic
+#
+# Create a directory containing boot.tar.gz and rootfs.tar.gz.
+# Generic implementation that works for any machine (Raspberry Pi, Banana Pi, etc.).
+#
+# Output layout:
+#   ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.dir/
+#     ├── boot.tar.gz
+#     └── rootfs.tar.gz
+#
+# Required variable:
+#   IMAGE_DIR_GENERIC_BOOT_FILES — space-separated list of file names present
+#                                  in ${IMGDEPLOYDIR} to include in boot.tar.gz.
+#                                  Must be set in the image recipe.
+
+# List of boot file names found in ${IMGDEPLOYDIR} (must be set in the image recipe)
+IMAGE_DIR_GENERIC_BOOT_FILES ?= ""
+
+# Rootfs is always sourced from tar.gz
+IMAGE_TYPEDEP:dir_generic = "tar.gz"
+
+# Boot files are deployed by the kernel and bootloader recipes
+do_image_dir_generic[depends] += "virtual/kernel:do_deploy virtual/bootloader:do_deploy"
+
+IMAGE_CMD:dir_generic() {
+    WORK_OUTPUT_DIR=${TMPDIR}/${IMAGE_NAME}.dir
+    FINAL_DIRNAME=${IMAGE_NAME}.dir
+    FINAL_DIR_PATH=${DEPLOY_DIR_IMAGE}/${FINAL_DIRNAME}
+    FINAL_LINK=${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.dir
+
+    ROOTFS_SRC_TAR_GZ="${IMGDEPLOYDIR}/${IMAGE_NAME}.tar.gz"
+    ROOTFS_TAR_GZ=${WORK_OUTPUT_DIR}/rootfs.tar.gz
+    BOOT_TAR_GZ=${WORK_OUTPUT_DIR}/boot.tar.gz
+
+    # --- Validate inputs ---
+    if [ ! -d "${IMAGE_ROOTFS}" ]; then
+        bbfatal "Missing rootfs directory: ${IMAGE_ROOTFS}"
+    fi
+
+    if [ ! -f "${ROOTFS_SRC_TAR_GZ}" ]; then
+        bbfatal "Missing rootfs tar.gz: ${ROOTFS_SRC_TAR_GZ}"
+    fi
+
+    BOOT_FILES="${IMAGE_DIR_GENERIC_BOOT_FILES}"
+    if [ -z "${BOOT_FILES}" ]; then
+        bbfatal "IMAGE_DIR_GENERIC_BOOT_FILES is not set. Define it in the image recipe."
+    fi
+
+    # --- Prepare work directory ---
+    rm -fr "${WORK_OUTPUT_DIR}"
+    mkdir -p "${WORK_OUTPUT_DIR}"
+
+    # --- ROOTFS ---
+    cp "${ROOTFS_SRC_TAR_GZ}" "${ROOTFS_TAR_GZ}" || {
+        bbfatal "Unable to copy rootfs '${ROOTFS_SRC_TAR_GZ}' to '${ROOTFS_TAR_GZ}'"
+    }
+
+    # --- BOOT ---
+    BOOT_DIR=${WORK_OUTPUT_DIR}/boot
+    mkdir -p "${BOOT_DIR}"
+
+    for f in ${BOOT_FILES}; do
+        if [ ! -f "${DEPLOY_DIR_IMAGE}/${f}" ]; then
+            bbfatal "Boot file '${f}' not found in ${IMGDEPLOYDIR} (listed in IMAGE_DIR_GENERIC_BOOT_FILES)"
+        fi
+        cp "${DEPLOY_DIR_IMAGE}/${f}" "${BOOT_DIR}/"
+    done
+
+    tar -cvzf "${BOOT_TAR_GZ}" -C "${BOOT_DIR}" . || {
+        bbfatal "Unable to create boot tar.gz at '${BOOT_TAR_GZ}'"
+    }
+    rm -fr "${BOOT_DIR}"
+
+    # --- Finalize: move to deploy dir and create symlink ---
+    rm -fr "${FINAL_DIR_PATH}"
+    mv "${WORK_OUTPUT_DIR}" "${FINAL_DIR_PATH}"
+
+    if [ -e "${FINAL_LINK}" ] || [ -L "${FINAL_LINK}" ]; then
+        rm -f "${FINAL_LINK}"
+    fi
+
+    ln -s "${FINAL_DIRNAME}" "${FINAL_LINK}" || { bbfatal "Unable to create symlink '${FINAL_LINK}' -> '${FINAL_DIRNAME}'"; }
+}
