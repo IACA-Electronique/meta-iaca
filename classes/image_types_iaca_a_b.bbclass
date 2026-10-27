@@ -83,6 +83,6 @@ IMAGE_CMD:iaca_a_b() {
     rm -fr "$WORK_OUTPUT_DIR"
 }
 
-IMAGE_TYPEDEP:iaca_a_b = "dir"
+IMAGE_TYPEDEP:iaca_a_b = "dir_generic"
 
 do_image_iaca[depends] += "iaca-assets:do_deploy"

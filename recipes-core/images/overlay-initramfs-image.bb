@@ -2,7 +2,8 @@ DESCRIPTION = "Overlay initramfs image"
 
 LICENSE = "MIT"
 
-inherit core-image
+# Include core-image-minimal as the base
+require recipes-core/images/core-image-minimal.bb
 
 IMAGE_FSTYPES = "cpio.gz"
 IMAGE_FEATURES = ""
