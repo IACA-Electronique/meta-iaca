@@ -11,6 +11,9 @@
 # Required variable:
 #   IMAGE_DIR_GENERIC_BOOT_FILES — space-separated list of file names present
 #                                  in ${IMGDEPLOYDIR} to include in boot.tar.gz.
+#                                  Optional "source;target" syntax renames the
+#                                  file in the boot directory. Without ';', the
+#                                  target name is the same as the source name.
 #                                  Must be set in the image recipe.
 
 # List of boot file names found in ${IMGDEPLOYDIR} (must be set in the image recipe)
@@ -21,6 +24,27 @@ IMAGE_TYPEDEP:dir_generic = "tar.gz"
 
 # Boot files are deployed by the kernel and bootloader recipes
 do_image_dir_generic[depends] += "virtual/kernel:do_deploy virtual/bootloader:do_deploy"
+
+# Split a boot file entry into source and target names.
+# Optional "source;target" syntax: before ';' is the source file name in
+# ${DEPLOY_DIR_IMAGE}, after ';' is the target name in the boot directory.
+# Without ';', source and target are the same. Results are returned via the
+# variable named by <src_var> and <dst_var>.
+parse_boot_file_name() {
+    entry="$1"
+    src_var="$2"
+    dst_var="$3"
+    case "${entry}" in
+        *\;*)
+            eval "${src_var}=\${entry%%\\;*}"
+            eval "${dst_var}=\${entry##*;}"
+            ;;
+        *)
+            eval "${src_var}=\${entry}"
+            eval "${dst_var}=\${entry}"
+            ;;
+    esac
+}
 
 IMAGE_CMD:dir_generic() {
     WORK_OUTPUT_DIR=${TMPDIR}/${IMAGE_NAME}.dir
@@ -60,10 +84,11 @@ IMAGE_CMD:dir_generic() {
     mkdir -p "${BOOT_DIR}"
 
     for f in ${BOOT_FILES}; do
-        if [ ! -f "${DEPLOY_DIR_IMAGE}/${f}" ]; then
-            bbfatal "Boot file '${f}' not found in ${IMGDEPLOYDIR} (listed in IMAGE_DIR_GENERIC_BOOT_FILES)"
+        parse_boot_file_name "${f}" src dst
+        if [ ! -f "${DEPLOY_DIR_IMAGE}/${src}" ]; then
+            bbfatal "Boot file '${src}' not found in ${IMGDEPLOYDIR} (listed in IMAGE_DIR_GENERIC_BOOT_FILES)"
         fi
-        cp "${DEPLOY_DIR_IMAGE}/${f}" "${BOOT_DIR}/"
+        cp "${DEPLOY_DIR_IMAGE}/${src}" "${BOOT_DIR}/${dst}"
     done
 
     tar -cvzf "${BOOT_TAR_GZ}" -C "${BOOT_DIR}" . || {
