@@ -51,7 +51,4 @@ mount --move /dev "${ROOTMNT}/dev"
 
 echo "Switching to real rootfs"
 
-ls -al /overlay/root
-ls -al /overlay/root/sbin
-
 exec switch_root "/overlay/root" /sbin/init
