@@ -1,6 +1,8 @@
 DESCRIPTION = "Overlay files for initramfs"
 LICENSE = "CLOSED"
 
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:${THISDIR}/files/${MACHINE}:"
+
 SRC_URI = " \
     file://init \
     file://iaca-splash.sh \
