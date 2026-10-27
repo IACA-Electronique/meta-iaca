@@ -19,8 +19,8 @@ ___
 To generate a standard IACA image, add the following configuration to `local.conf`:
 
 ```
-IMAGE_CLASSES += "image_types_iaca image_types_dir"
-IMAGE_FSTYPES = "dir iaca"
+IMAGE_CLASSES += "image_types_iaca image_types_dir_generic"
+IMAGE_FSTYPES = "dir_generic iaca"
 ```
 
 ## IACA image format with A/B partitions
@@ -28,8 +28,8 @@ IMAGE_FSTYPES = "dir iaca"
 To generate an IACA image using A/B partitions, add the following configuration to `local.conf`:
 
 ```
-IMAGE_CLASSES += "image_types_iaca_a_b image_types_dir"
-IMAGE_FSTYPES = "dir iaca_a_b"
+IMAGE_CLASSES += "image_types_iaca_a_b image_types_dir_generic"
+IMAGE_FSTYPES = "dir_generic iaca_a_b"
 ```
 
 ---
@@ -46,7 +46,7 @@ Provides the IACA image format for standard single-rootfs images.
 #### `image_types_iaca_a_b.bbclass`
 Provides the IACA image format with redundant A/B rootfs partitions for failover support.
 
-#### `image_types_dir.bbclass`
+#### `image_types_dir_generic.bbclass`
 Provides directory image type functionality required by IACA image classes.
 
 ### Rust Support Classes
@@ -312,7 +312,7 @@ bitbake example
 
 ## Notes
 
-- The `dir` image type is required because the IACA image classes use the generated root filesystem directory as input.
+- The `dir_generic` image type is required because the IACA image classes use the generated root filesystem directory as input.
 - Use `iaca` for a single-rootfs image.
 - Use `iaca_a_b` when building an image with redundant A/B rootfs partitions (see [Raspberry Pi A/B Redundant Partitioning Guide](../../docs/a_b%20partition/README.md)).
 - Rust-based recipes require appropriate Rust toolchain configuration in your build environment.
