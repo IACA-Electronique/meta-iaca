@@ -26,7 +26,7 @@ IMAGE_CLASSES:append = " \
     ${@' image_types_dir_generic image_types_iaca' if (d.getVar('MACHINE') or '').startswith('bananapi') else ''} \
 "
 IMAGE_FSTYPES = " \
-    ${@'rpi-sdimg tar.gz dir_generic iaca' if (d.getVar('MACHINE') or '').startswith('raspberry') else ''} \
+    ${@'tar.gz dir_generic iaca' if (d.getVar('MACHINE') or '').startswith('raspberry') else ''} \
     ${@'tar.gz dir_generic iaca' if (d.getVar('MACHINE') or '').startswith('bananapi') else ''} \
 "
 # Boot files for dir_generic image type — names of files present in
