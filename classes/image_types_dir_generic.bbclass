@@ -35,7 +35,11 @@ IMAGE_DIR_GENERIC_BOOT_FILES ?= ""
 IMAGE_TYPEDEP:dir_generic = "tar.gz"
 
 # Boot files are deployed by the kernel and bootloader recipes
-do_image_dir_generic[depends] += "virtual/kernel:do_deploy virtual/bootloader:do_deploy"
+do_image_dir_generic[depends] += " \
+    virtual/kernel:do_deploy virtual/bootloader:do_deploy \
+    ${@'rpi-bootfiles:do_deploy' if (d.getVar('MACHINE') or '').startswith('raspberry') else ''} \
+    iaca-assets:do_deploy \
+"
 
 # Split a boot file entry into source and target names.
 # Optional "source;target" syntax: before ';' is the source file name in
