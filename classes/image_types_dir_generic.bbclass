@@ -27,9 +27,23 @@
 #                                  "source;target", the content is placed
 #                                  inside the target directory.
 #                                  Must be set in the image recipe.
+#
+# Optional:
+#   IMAGE_DIR_GENERIC_BOOT_FILES_OVERRIDE — space-separated list of
+#                                  entries with the same syntax and behavior as
+#                                  IMAGE_DIR_GENERIC_BOOT_FILES, copied after
+#                                  them. Because copy overwrites existing
+#                                  files, entries here replace files placed by
+#                                  IMAGE_DIR_GENERIC_BOOT_FILES (e.g. rename
+#                                  an initramfs to kernel.img to override the
+#                                  one deployed by the kernel recipe).
 
 # List of boot file names found in ${IMGDEPLOYDIR} (must be set in the image recipe)
 IMAGE_DIR_GENERIC_BOOT_FILES ?= ""
+
+# Optional list of extra boot entries, processed after
+# IMAGE_DIR_GENERIC_BOOT_FILES so that they can override files placed by it.
+IMAGE_DIR_GENERIC_BOOT_FILES_OVERRIDE ?= ""
 
 # Rootfs is always sourced from tar.gz
 IMAGE_TYPEDEP:dir_generic = "tar.gz"
@@ -81,7 +95,12 @@ IMAGE_CMD:dir_generic() {
         bbfatal "Missing rootfs tar.gz: ${ROOTFS_SRC_TAR_GZ}"
     fi
 
+    # Assign to shell vars (inside quotes) before iterating: entries may
+    # contain ';' and a bitbake var expanded directly in the for-list would
+    # break the bitbake shell parser at parse time. Shell vars are not
+    # expanded by bitbake, so the ';' reaches the real shell only at runtime.
     BOOT_FILES="${IMAGE_DIR_GENERIC_BOOT_FILES}"
+    BOOT_FILES_OVERRIDE="${IMAGE_DIR_GENERIC_BOOT_FILES_OVERRIDE}"
     if [ -z "${BOOT_FILES}" ]; then
         bbfatal "IMAGE_DIR_GENERIC_BOOT_FILES is not set. Define it in the image recipe."
     fi
@@ -99,7 +118,7 @@ IMAGE_CMD:dir_generic() {
     BOOT_DIR=${WORK_OUTPUT_DIR}/boot
     mkdir -p "${BOOT_DIR}"
 
-    for f in ${BOOT_FILES}; do
+    for f in ${BOOT_FILES} ${BOOT_FILES_OVERRIDE}; do
         parse_boot_file_name "${f}" src dst
         case "${src}" in
             *\/*)
@@ -107,7 +126,7 @@ IMAGE_CMD:dir_generic() {
                 # target location, without the directory base name.
                 src_dir=${src%\/*}
                 if [ ! -d "${DEPLOY_DIR_IMAGE}/${src_dir}" ]; then
-                    bbfatal "Boot directory '${src_dir}' not found in ${DEPLOY_DIR_IMAGE} (listed in IMAGE_DIR_GENERIC_BOOT_FILES)"
+                    bbfatal "Boot directory '${src_dir}' not found in ${DEPLOY_DIR_IMAGE} (listed in IMAGE_DIR_GENERIC_BOOT_FILES or IMAGE_DIR_GENERIC_BOOT_FILES_OVERRIDE)"
                 fi
                 # Target directory: boot root when no explicit target was
                 # given (dst defaulted to "dir/*"), otherwise the target with
@@ -135,7 +154,7 @@ IMAGE_CMD:dir_generic() {
                 elif [ -f "${DEPLOY_DIR_IMAGE}/${src}" ]; then
                     cp "${DEPLOY_DIR_IMAGE}/${src}" "${BOOT_DIR}/${dst}"
                 else
-                    bbfatal "Boot entry '${src}' not found in ${DEPLOY_DIR_IMAGE} (listed in IMAGE_DIR_GENERIC_BOOT_FILES)"
+                    bbfatal "Boot entry '${src}' not found in ${DEPLOY_DIR_IMAGE} (listed in IMAGE_DIR_GENERIC_BOOT_FILES or IMAGE_DIR_GENERIC_BOOT_FILES_OVERRIDE)"
                 fi
                 ;;
         esac
