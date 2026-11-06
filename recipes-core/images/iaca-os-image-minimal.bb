@@ -22,13 +22,17 @@ IMAGE_DEPENDS:append = " overlay-initramfs-image"
 # "inherit_defer" and reads IMAGE_FSTYPES/IMAGE_TYPEDEP:* in its own anonymous
 # python block -- both before any python __anonymous() in this recipe runs.
 IMAGE_CLASSES:append = " \
-    ${@' sdcard_image-rpi image_types_iaca image_types_dir_generic' if (d.getVar('MACHINE') or '').startswith('raspberry') else ''} \
-    ${@' image_types_dir_generic image_types_iaca' if (d.getVar('MACHINE') or '').startswith('bananapi') else ''} \
+    ${@' sdcard_image-rpi image_types_dir_generic image_types_iaca image_types_iaca_a_b' if (d.getVar('MACHINE') or '').startswith('raspberry') else ''} \
+    ${@' image_types_dir_generic image_types_iaca image_types_iaca_a_b' if (d.getVar('MACHINE') or '').startswith('bananapi') else ''} \
 "
 IMAGE_FSTYPES = " \
-    ${@'tar.gz dir_generic iaca' if (d.getVar('MACHINE') or '').startswith('raspberry') else ''} \
-    ${@'tar.gz dir_generic iaca' if (d.getVar('MACHINE') or '').startswith('bananapi') else ''} \
+    ${@'ext4 tar.gz dir_generic iaca iaca_a_b' if (d.getVar('MACHINE') or '').startswith('raspberry') else ''} \
+    ${@'ext4 tar.gz dir_generic iaca iaca_a_b' if (d.getVar('MACHINE') or '').startswith('bananapi') else ''} \
 "
+# The 'ext4' artifact (iaca-os-image-minimal-<MACHINE>.rootfs.ext4) is the
+# payload that iaca-os-image-minimal-bundle packs into the RAUC bundle as the
+# rootfs slot image. The bundle must be built with the same MACHINE as the
+# image so the artifact names match.
 # Boot files for dir_generic image type — names of files present in
 # ${IMGDEPLOYDIR} that are collected into boot.tar.gz by the bbclass.
 # IMAGE_BOOT_FILES is defined by the machine config (e.g. uImage, boot.scr,
@@ -42,5 +46,6 @@ IMAGE_ROOTFS_EXTRA_SPACE = "1048576"
 
 PACKAGE_CLASSES ?= "package_deb"
 
-COMPATIBLE_MACHINE = "raspberrypi5|raspberrypi4|bananapi*"
+COMPATIBLE_MACHINE = "raspberrypi5|raspberrypi4|bananapi*|raspberrypi5-rauc"
 
+IMAGE_INSTALL:raspberrypi5:append = " rauc rauc-conf raspi-utils"

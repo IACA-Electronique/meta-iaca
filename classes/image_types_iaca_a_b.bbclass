@@ -30,17 +30,23 @@ IMAGE_CMD:iaca_a_b() {
     update_root_from_boot_archive(){
         local archive=$1
         local root_part_device=$2
+        local rauc_slot=$3
         local tmp_file=archive.tar
 
         gunzip -c "$archive" > "${tmp_file}" || { echo "ERROR: Unable to uncompress '$archive'."; return 1; }
 
         tar -xf "$tmp_file" "./cmdline.txt" || { echo "ERROR: Unable to extract cmdline.txt from '$archive'."; return 2; }
 
-        sed -i -E "s#root=[^ ]+#root=${root_part_device}#" cmdline.txt || { echo "ERROR: Unable to update cmdline.txt from '$archive'."; return 3; }
+        sed -i -E "s#root=[^ ]+#root=${root_part_device}#" cmdline.txt || { echo "ERROR: Unable to update 'root=' in cmdline.txt from '$archive'."; return 3; }
+        if grep -q "rauc.slot=" cmdline.txt; then
+          sed -i -E "s#(rauc\.slot=[^ ]*)?#rauc.slot=${rauc_slot}#" cmdline.txt || { echo "ERROR: Unable to update 'rauc.slot=' in cmdline.txt from '$archive'."; return 4; }
+        else
+          echo " rauc.slot=${rauc_slot}" >> cmdline.txt || { echo "ERROR: Unable to update 'rauc.slot=' in cmdline.txt from '$archive'."; return 4; }
+        fi
 
-        tar -uf "$tmp_file" "./cmdline.txt" || { echo "ERROR: Unable to update cmdline.txt to '$archive'."; return 4; }
+        tar -uf "$tmp_file" "./cmdline.txt" || { echo "ERROR: Unable to update cmdline.txt to '$archive'."; return 5; }
 
-        gzip -c "$tmp_file" > "$archive" || { echo "ERROR: Unable compress '$archive'."; return 5; }
+        gzip -c "$tmp_file" > "$archive" || { echo "ERROR: Unable compress '$archive'."; return 6; }
     }
 
 
