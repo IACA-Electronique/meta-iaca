@@ -41,12 +41,16 @@ IMAGE_CMD:iaca_a_b() {
         if grep -q "rauc.slot=" cmdline.txt; then
           sed -i -E "s#(rauc\.slot=[^ ]*)?#rauc.slot=${rauc_slot}#" cmdline.txt || { echo "ERROR: Unable to update 'rauc.slot=' in cmdline.txt from '$archive'."; return 4; }
         else
-          echo " rauc.slot=${rauc_slot}" >> cmdline.txt || { echo "ERROR: Unable to update 'rauc.slot=' in cmdline.txt from '$archive'."; return 4; }
+          sed -i -E "1s/\$/ rauc.slot=${rauc_slot}/" cmdline.txt || { echo "ERROR: Unable to update 'rauc.slot=' in cmdline.txt from '$archive'."; return 4; }
         fi
 
         tar -uf "$tmp_file" "./cmdline.txt" || { echo "ERROR: Unable to update cmdline.txt to '$archive'."; return 5; }
 
         gzip -c "$tmp_file" > "$archive" || { echo "ERROR: Unable compress '$archive'."; return 6; }
+
+        # Clear unused files
+        rm "$tmp_file"
+        rm "cmdline.txt"
     }
 
 
@@ -71,8 +75,8 @@ IMAGE_CMD:iaca_a_b() {
 
     cp "$ROOTFS_TAR_GZ" "${WORK_OUTPUT_DIR}/2" || { echo "ERROR : Unable to copy rootfs."; exit 2; }
 
-    update_root_from_boot_archive "${WORK_OUTPUT_DIR}/0.tar.gz" "/dev/mmcblk0p3" || { echo "ERROR: Unable to update rootfs in boot A."; exit 3; }
-    update_root_from_boot_archive "${WORK_OUTPUT_DIR}/1.tar.gz" "/dev/mmcblk0p4" || { echo "ERROR: Unable to update rootfs in boot B."; exit 3; }
+    update_root_from_boot_archive "${WORK_OUTPUT_DIR}/0.tar.gz" "/dev/mmcblk0p3" "a" || { echo "ERROR: Unable to update rootfs in boot A."; exit 3; }
+    update_root_from_boot_archive "${WORK_OUTPUT_DIR}/1.tar.gz" "/dev/mmcblk0p4" "b" || { echo "ERROR: Unable to update rootfs in boot B."; exit 3; }
 
     mv "${WORK_OUTPUT_DIR}/0.tar.gz" "${WORK_OUTPUT_DIR}/0" || { echo "ERROR : Unable to rename boot A."; exit 2; }
     mv "${WORK_OUTPUT_DIR}/1.tar.gz" "${WORK_OUTPUT_DIR}/1" || { echo "ERROR : Unable to rename boot B."; exit 2; }
