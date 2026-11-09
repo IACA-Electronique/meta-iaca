@@ -21,8 +21,6 @@ RAUC_SLOT_rootfs[rename] = "rootfs.ext4"
 # ${B} and fopen() fails with "No such file or directory".
 RAUC_KEY_FILE ?= "${WORKDIR}/development-1.key.pem"
 RAUC_CERT_FILE ?= "${WORKDIR}/development-1.cert.pem"
-# Keyring embedded in the bundle for verification chain
-RAUC_KEYRING_FILE ?= "${WORKDIR}/ca.cert.pem"
 
 # HOOKS
 # The hook executable is registered via [hooks] filename (mandatory when any
@@ -35,4 +33,4 @@ RAUC_BUNDLE_HOOKS[file] = "hook-post-install.sh"
 
 RAUC_SLOT_rootfs[hooks] = "post-install"
 
-SRC_URI += "file://development-1.key.pem file://development-1.cert.pem file://ca.cert.pem file://hook-post-install.sh"
+SRC_URI += "file://development-1.key.pem file://development-1.cert.pem file://hook-post-install.sh"
