@@ -35,4 +35,4 @@ RAUC_BUNDLE_HOOKS[file] = "hook-post-install.sh"
 
 RAUC_SLOT_rootfs[hooks] = "post-install"
 
-SRC_URI += "file://${RAUC_KEY_FILE} file://${RAUC_CERT_FILE} file://${RAUC_KEYRING_FILE} file://hook-post-install.sh"
+SRC_URI += "file://development-1.key.pem file://development-1.cert.pem file://ca.cert.pem file://hook-post-install.sh"
