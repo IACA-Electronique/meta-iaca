@@ -23,11 +23,11 @@ IMAGE_DEPENDS:append = " overlay-initramfs-image"
 # python block -- both before any python __anonymous() in this recipe runs.
 IMAGE_CLASSES:append = " \
     ${@' sdcard_image-rpi image_types_dir_generic image_types_iaca image_types_iaca_a_b' if (d.getVar('MACHINE') or '').startswith('raspberry') else ''} \
-    ${@' image_types_dir_generic image_types_iaca image_types_iaca_a_b' if (d.getVar('MACHINE') or '').startswith('bananapi') else ''} \
+    ${@' image_types_dir_generic image_types_iaca' if (d.getVar('MACHINE') or '').startswith('bananapi') else ''} \
 "
 IMAGE_FSTYPES = " \
     ${@'ext4 tar.gz dir_generic iaca iaca_a_b' if (d.getVar('MACHINE') or '').startswith('raspberry') else ''} \
-    ${@'ext4 tar.gz dir_generic iaca iaca_a_b' if (d.getVar('MACHINE') or '').startswith('bananapi') else ''} \
+    ${@'ext4 tar.gz dir_generic iaca' if (d.getVar('MACHINE') or '').startswith('bananapi') else ''} \
 "
 # The 'ext4' artifact (iaca-os-image-minimal-<MACHINE>.rootfs.ext4) is the
 # payload that iaca-os-image-minimal-bundle packs into the RAUC bundle as the
