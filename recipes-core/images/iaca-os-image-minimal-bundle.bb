@@ -34,3 +34,5 @@ RAUC_BUNDLE_HOOKS[file] = "hook-post-install.sh"
 RAUC_SLOT_rootfs[hooks] = "post-install"
 
 SRC_URI += "file://development-1.key.pem file://development-1.cert.pem file://hook-post-install.sh"
+
+COMPATIBLE_MACHINE = "raspberrypi5|raspberrypi4"

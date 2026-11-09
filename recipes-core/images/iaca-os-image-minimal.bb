@@ -46,6 +46,8 @@ IMAGE_ROOTFS_EXTRA_SPACE = "1048576"
 
 PACKAGE_CLASSES ?= "package_deb"
 
-COMPATIBLE_MACHINE = "raspberrypi5|raspberrypi4|bananapi*|raspberrypi5-rauc"
+COMPATIBLE_MACHINE = "raspberrypi5|raspberrypi4|bananapi*"
 
-IMAGE_INSTALL:append = " rauc rauc-conf"
+IMAGE_INSTALL:append = " \
+    ${@' rauc rauc-conf' if (d.getVar('MACHINE') or '') in ('raspberrypi5', 'raspberrypi4') else ''} \
+"
