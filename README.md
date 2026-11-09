@@ -6,12 +6,11 @@ This layer provides custom image types, classes, and recipes for IACA OS builds.
 
 ## ✅ Supported devices
 
-| Device name                                                                                | Status               | `MACHINE`           |
-|--------------------------------------------------------------------------------------------|----------------------|---------------------|
-| IACA-BOX revB - CM5                                                                        | ✅ Supported, Tested | `raspberrypi5`      |
-| IACA-BOX revB - CM4                                                                        | ✅ Supported         | `raspberrypi4`      |
-| [Banana Pi BPI-M2 Ultra](https://docs.banana-pi.org/en/BPI-M2_Ultra/BananaPi_BPI-M2_Ultra) | ✅ Supported, Tested | `bananapi-m2-ultra` |
-
+| Device name                                                                                | Status               | `MACHINE`           | RAUC Support |
+|--------------------------------------------------------------------------------------------|----------------------|---------------------|--------------|
+| IACA-BOX revB - CM5                                                                        | ✅ Supported, Tested | `raspberrypi5`      | ✅ Yes       |
+| IACA-BOX revB - CM4                                                                        | ✅ Supported         | `raspberrypi4`      | ✅ Yes       |
+| [Banana Pi BPI-M2 Ultra](https://docs.banana-pi.org/en/BPI-M2_Ultra/BananaPi_BPI-M2_Ultra) | ✅ Supported, Tested | `bananapi-m2-ultra` | ❌️ No        |
 ___
 
 ## IACA image format
