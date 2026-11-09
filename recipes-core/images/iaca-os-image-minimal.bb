@@ -48,4 +48,4 @@ PACKAGE_CLASSES ?= "package_deb"
 
 COMPATIBLE_MACHINE = "raspberrypi5|raspberrypi4|bananapi*|raspberrypi5-rauc"
 
-IMAGE_INSTALL:raspberrypi5:append = " rauc rauc-conf raspi-utils"
+IMAGE_INSTALL:append = " rauc rauc-conf"
