@@ -9,7 +9,11 @@ inherit bundle
 
 RAUC_BUNDLE_COMPATIBLE = "iaca-os-raspberrypi5"
 RAUC_BUNDLE_VERSION ?= "${DISTRO_VERSION}"
-RAUC_BUNDLE_SLOTS = "rootfs"
+RAUC_BUNDLE_SLOTS = "boot rootfs"
+
+RAUC_SLOT_boot = "iaca-os-image-minimal"
+RAUC_SLOT_boot[file] = "iaca-os-image-minimal-${MACHINE}.rootfs.dir/boot.tar.gz"
+RAUC_SLOT_boot[rename] = "boot.tar.gz"
 
 RAUC_SLOT_rootfs = "iaca-os-image-minimal"
 RAUC_SLOT_rootfs[fstype] = "ext4"
