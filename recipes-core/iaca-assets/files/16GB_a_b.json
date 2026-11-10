@@ -7,7 +7,7 @@
       "fs_type": "fat",
       "data_file": "0",
       "free_space_size": 0,
-      "size": 256000000
+      "size": 1048576
     },
     {
       "index": 1,
@@ -18,15 +18,22 @@
     },
     {
       "index": 2,
-      "fs_type": "ext4",
+      "fs_type": "fat",
       "data_file": "2",
       "free_space_size": 0,
-      "size": 3537047020
+      "size": 256000000
     },
     {
       "index": 3,
       "fs_type": "ext4",
-      "data_file": "2",
+      "data_file": "3",
+      "free_space_size": 0,
+      "size": 3537047020
+    },
+    {
+      "index": 4,
+      "fs_type": "ext4",
+      "data_file": "3",
       "free_space_size": 0,
       "size": 3537047020
     }
