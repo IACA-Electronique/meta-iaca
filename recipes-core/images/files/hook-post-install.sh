@@ -16,8 +16,9 @@
 #
 # Error codes (incremental, exit code tells which step failed):
 #   10 = failed to mount the boot partition
-#   11 = failed to fix cmdline.txt (mount/sed/umount chain)
+#   11 = failed to fix cmdline.txt root= (mount/sed/umount chain)
 #   12 = vcmailbox signalling failed
+#   13 = failed to set rauc.slot= in cmdline.txt
 
 # **********************************************************************************************************************
 
@@ -26,7 +27,7 @@ get_booted_slot() {
     tr ' ' '\n' < /proc/cmdline | sed -n 's/^rauc\.slot=//p'
 }
 
-fix_cmdline_root() {
+set_cmdline_root() {
     dev="$1"
     new_root="$2"
     mnt="/tmp/cmdline-mnt"
@@ -35,6 +36,24 @@ fix_cmdline_root() {
     mount "$dev" "$mnt" || return 10
 
     sed -i "s|root=[^ ]*|root=$new_root|" "$mnt/cmdline.txt"
+
+    umount "$mnt"
+    rmdir "$mnt"
+}
+
+set_cmdline_slot() {
+    dev="$1"
+    slot="$2"
+    mnt="/tmp/cmdline-mnt"
+
+    mkdir -p "$mnt"
+    mount "$dev" "$mnt" || return 10
+
+    if grep -q "rauc.slot=" "$mnt/cmdline.txt"; then
+        sed -i "s|rauc\.slot=[^ ]*|rauc.slot=$slot|" "$mnt/cmdline.txt"
+    else
+        sed -i "s|$| rauc.slot=$slot|" "$mnt/cmdline.txt"
+    fi
 
     umount "$mnt"
     rmdir "$mnt"
@@ -51,9 +70,11 @@ case "$1" in
         slot=$(get_booted_slot)
 
         if [ "$slot" = "a" ]; then
-            fix_cmdline_root /dev/mmcblk0p3 /dev/mmcblk0p5 || exit 11
+            set_cmdline_root /dev/mmcblk0p3 /dev/mmcblk0p5 || exit 11
+            set_cmdline_slot /dev/mmcblk0p3 b || exit 13
         elif [ "$slot" = "b" ]; then
-            fix_cmdline_root /dev/mmcblk0p2 /dev/mmcblk0p4 || exit 11
+            set_cmdline_root /dev/mmcblk0p2 /dev/mmcblk0p4 || exit 11
+            set_cmdline_slot /dev/mmcblk0p4 a || exit 13
         fi
 
         signal_install_done || exit 12
