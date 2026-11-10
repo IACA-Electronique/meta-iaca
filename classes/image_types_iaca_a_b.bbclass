@@ -6,6 +6,13 @@
 
 
 IMAGE_CMD:iaca_a_b() {
+    create_empty_tar_gz() {
+        local archive=$1
+
+        tar -czf "$archive" --files-from /dev/null || { echo "ERROR: Unable to create empty archive '$archive'."; return 1; }
+    }
+
+
     add_file_in_tar_archive() {
         local archive=$1
         local file_to_add=$2
@@ -68,18 +75,21 @@ IMAGE_CMD:iaca_a_b() {
 
     mkdir "$WORK_OUTPUT_DIR"
 
-    cp "$BOOT_TAR_GZ" "${WORK_OUTPUT_DIR}/0.tar.gz" || { echo "ERROR : Unable to copy boot A."; exit 1; }
-    cp "$BOOT_TAR_GZ" "${WORK_OUTPUT_DIR}/1.tar.gz" || { echo "ERROR : Unable to copy boot B."; exit 1; }
+    create_empty_tar_gz "${WORK_OUTPUT_DIR}/0.tar.gz"
+
+    cp "$BOOT_TAR_GZ" "${WORK_OUTPUT_DIR}/1.tar.gz" || { echo "ERROR : Unable to copy boot A."; exit 1; }
+    cp "$BOOT_TAR_GZ" "${WORK_OUTPUT_DIR}/2.tar.gz" || { echo "ERROR : Unable to copy boot B."; exit 1; }
 
     add_file_in_tar_archive "${WORK_OUTPUT_DIR}/0.tar.gz" "${DEPLOY_DIR_IMAGE}/a_b/autoboot.txt" || { echo "ERROR : Unable to add autoboot.txt file in boot A."; exit 1; }
 
-    cp "$ROOTFS_TAR_GZ" "${WORK_OUTPUT_DIR}/2" || { echo "ERROR : Unable to copy rootfs."; exit 2; }
+    cp "$ROOTFS_TAR_GZ" "${WORK_OUTPUT_DIR}/3" || { echo "ERROR : Unable to copy rootfs."; exit 2; }
 
-    update_root_from_boot_archive "${WORK_OUTPUT_DIR}/0.tar.gz" "/dev/mmcblk0p3" "a" || { echo "ERROR: Unable to update rootfs in boot A."; exit 3; }
-    update_root_from_boot_archive "${WORK_OUTPUT_DIR}/1.tar.gz" "/dev/mmcblk0p4" "b" || { echo "ERROR: Unable to update rootfs in boot B."; exit 3; }
+    update_root_from_boot_archive "${WORK_OUTPUT_DIR}/1.tar.gz" "/dev/mmcblk0p4" "a" || { echo "ERROR: Unable to update rootfs in boot A."; exit 3; }
+    update_root_from_boot_archive "${WORK_OUTPUT_DIR}/2.tar.gz" "/dev/mmcblk0p5" "b" || { echo "ERROR: Unable to update rootfs in boot B."; exit 3; }
 
-    mv "${WORK_OUTPUT_DIR}/0.tar.gz" "${WORK_OUTPUT_DIR}/0" || { echo "ERROR : Unable to rename boot A."; exit 2; }
-    mv "${WORK_OUTPUT_DIR}/1.tar.gz" "${WORK_OUTPUT_DIR}/1" || { echo "ERROR : Unable to rename boot B."; exit 2; }
+    mv "${WORK_OUTPUT_DIR}/0.tar.gz" "${WORK_OUTPUT_DIR}/0" || { echo "ERROR : Unable to rename autoboot part."; exit 2; }
+    mv "${WORK_OUTPUT_DIR}/1.tar.gz" "${WORK_OUTPUT_DIR}/1" || { echo "ERROR : Unable to rename boot A."; exit 2; }
+    mv "${WORK_OUTPUT_DIR}/2.tar.gz" "${WORK_OUTPUT_DIR}/2" || { echo "ERROR : Unable to rename boot B."; exit 2; }
 
     cp "${DEPLOY_DIR_IMAGE}/16GB_a_b.json" "${WORK_OUTPUT_DIR}/ifd.json" || { echo "ERROR : Unable to create ifd."; exit 3; }
 
