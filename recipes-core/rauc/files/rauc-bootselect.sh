@@ -17,8 +17,8 @@
 # Primary slot and slot state (good/bad) are derived from autoboot.txt
 # on the boot partition /dev/mmcblk0p1 (mounted only temporarily by this
 # script):
-#   - slot a good/primary: [all] boot_partition=1, [tryboot] boot_partition=2
-#   - slot b good/primary: [all] boot_partition=2, [tryboot] boot_partition=1
+#   - slot a good/primary: [all] boot_partition=2, [tryboot] boot_partition=3
+#   - slot b good/primary: [all] boot_partition=3, [tryboot] boot_partition=2
 
 set -e
 
@@ -38,14 +38,13 @@ REQUEST_SIZE="4"
 REQUEST_CODE="0"
 TRYBOOT_FLAG="1"
 
-# Map bootname to partition number in autoboot.txt (1-based firmware
-# numbering, distinct from the 0-based mailbox numbering above):
-# slot a -> 1, slot b -> 2
+# Map bootname to partition number in autoboot.txt:
+# slot a -> 2, slot b -> 3
 bootname_to_autoboot_partition() {
     local bootname="$1"
     case "${bootname}" in
-        a) echo "1" ;;
-        b) echo "2" ;;
+        a) echo "2" ;;
+        b) echo "3" ;;
         *)
             echo "Error: Invalid bootname '${bootname}'. Must be 'a' or 'b'" >&2
             return 1
@@ -53,13 +52,13 @@ bootname_to_autoboot_partition() {
     esac
 }
 
-# Map autoboot.txt partition number (1-based firmware numbering) to bootname:
-# 1 -> slot a, 2 -> slot b
+# Map autoboot.txt partition number to bootname:
+# 2 -> slot a, 3 -> slot b
 autoboot_partition_to_bootname() {
     local partition="$1"
     case "${partition}" in
-        1) echo "a" ;;
-        2) echo "b" ;;
+        2) echo "a" ;;
+        3) echo "b" ;;
         *)
             echo "Error: Invalid autoboot partition '${partition}'" >&2
             return 1
@@ -87,8 +86,8 @@ write_autoboot() {
     local main_part other_part
 
     case "${slot}" in
-        a) main_part="1"; other_part="2" ;;
-        b) main_part="2"; other_part="1" ;;
+        a) main_part="2"; other_part="3" ;;
+        b) main_part="3"; other_part="2" ;;
     esac
 
     cat > "${file}" <<EOF
@@ -141,7 +140,7 @@ do_get_primary() {
     fi
 
     case "${part}" in
-        1|2)
+        2|3)
             autoboot_partition_to_bootname "${part}"
             ;;
         *)
