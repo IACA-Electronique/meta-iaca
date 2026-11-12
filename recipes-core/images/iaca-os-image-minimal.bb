@@ -14,7 +14,7 @@ EXTRA_IMAGE_FEATURES += " \
 # Package installation
 IMAGE_INSTALL:append = " kernel-modules dosfstools tar gzip"
 IMAGE_INSTALL:append = " bash raspi-utils util-linux hello-rust colors i2c-tools"
-IMAGE_INSTALL:append = " iaca-watchdog iaca-os-exec iaca-os-infos iaca-os-infos-daemon rauc-usb-auto-upgrade"
+IMAGE_INSTALL:append = " iaca-watchdog iaca-os-exec iaca-os-infos iaca-os-infos-daemon"
 IMAGE_DEPENDS:append = " overlay-initramfs-image"
 
 # Machine-specific IMAGE_CLASSES and IMAGE_FSTYPES.
@@ -49,5 +49,5 @@ PACKAGE_CLASSES ?= "package_deb"
 COMPATIBLE_MACHINE = "raspberrypi5|raspberrypi4|bananapi*"
 
 IMAGE_INSTALL:append = " \
-    ${@' rauc rauc-conf' if (d.getVar('MACHINE') or '') in ('raspberrypi5', 'raspberrypi4') else ''} \
+    ${@' rauc rauc-conf rauc-usb-auto-upgrade' if (d.getVar('MACHINE') or '') in ('raspberrypi5', 'raspberrypi4') else ''} \
 "
