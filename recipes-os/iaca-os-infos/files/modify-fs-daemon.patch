@@ -1,4 +1,5 @@
 Subject: [PATCH] Yocto update
+Upstream-Status: Inappropriate [IACA target uses SysV init, not systemd]
 ---
 Index: usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh
 IDEA additional info:
@@ -6,8 +7,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh b/src/usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh
---- a/usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh	(revision 7baf64434054d735e896a37b4e735868cd78b8b5)
-+++ b/usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh	(date 1791379259350)
+--- a/src//usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh	(revision 7baf64434054d735e896a37b4e735868cd78b8b5)
++++ b/src//usr/local/iaca/os/exec/commands/infos/fs-daemon-cmd.sh	(date 1791379259350)
 @@ -10,22 +10,22 @@
 
  case "$1" in
@@ -41,8 +42,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/src/usr/local/iaca/os/exec/commands/infos/vars b/src/usr/local/iaca/os/exec/commands/infos/vars
---- a/usr/local/iaca/os/exec/commands/infos/vars	(revision 7baf64434054d735e896a37b4e735868cd78b8b5)
-+++ b/usr/local/iaca/os/exec/commands/infos/vars	(date 1791377873093)
+--- a/src/usr/local/iaca/os/exec/commands/infos/vars	(revision 7baf64434054d735e896a37b4e735868cd78b8b5)
++++ b/src/usr/local/iaca/os/exec/commands/infos/vars	(date 1791377873093)
 @@ -1,4 +1,4 @@
 -export FS_DAEMON_SERVICE_NAME=iaca-infos-fs-daemon.service
 +export FS_DAEMON_SERVICE_NAME=iaca-os-infos-daemon
