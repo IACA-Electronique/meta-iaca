@@ -5,15 +5,13 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 SRC_URI = "file://hello.rs"
 
-S = "${WORKDIR}"
-
 inherit rust
 
 do_compile() {
-    rustc ${RUSTC_ARCHFLAGS} -C linker=${RUST_TARGET_CCLD} -o hello hello.rs
+    rustc ${RUSTC_ARCHFLAGS} -C linker=${RUST_TARGET_CCLD} -o ${UNPACKDIR}/hello ${UNPACKDIR}/hello.rs
 }
 
 do_install() {
     install -d ${D}${bindir}
-    install -m 0755 hello ${D}${bindir}
+    install -m 0755 ${UNPACKDIR}/hello ${D}${bindir}
 }
