@@ -20,6 +20,6 @@ FILES:${PN}-service += "${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', ' ${
 do_install:append() {
     if ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', 'true', 'false', d)}; then
         install -d ${D}${sysconfdir}/init.d
-        install -m 0755 ${WORKDIR}/rauc-service.init ${D}${sysconfdir}/init.d/rauc-service
+        install -m 0755 ${UNPACKDIR}/rauc-service.init ${D}${sysconfdir}/init.d/rauc-service
     fi
 }

@@ -12,5 +12,5 @@ RAUC_CONFIG_DIR = "/etc/rauc"
 # Install the custom bootloader backend script
 do_install:append() {
     install -d ${D}${RAUC_CONFIG_DIR}
-    install -m 0755 ${WORKDIR}/rauc-bootselect.sh ${D}${RAUC_CONFIG_DIR}/rauc-bootselect
+    install -m 0755 ${UNPACKDIR}/rauc-bootselect.sh ${D}${RAUC_CONFIG_DIR}/rauc-bootselect
 }
