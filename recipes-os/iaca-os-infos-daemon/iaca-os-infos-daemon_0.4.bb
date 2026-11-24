@@ -1,7 +1,7 @@
 SUMMARY = "IACA INFOS DAEMON - Rust-based daemon to map i2c board manager to filesystem"
 SECTION = "base"
 HOMEPAGE = "https://gitlab.iaca-electronique.com/iaca-os/tools/iaca-system-infos-daemon"
-LICENSE = "GPLv3"
+LICENSE = "GPL-3.0-or-later"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"
 
 SRC_URI = " \
@@ -12,8 +12,6 @@ SRC_URI = " \
 inherit cargo cargo-update-recipe-crates update-rc.d
 
 require ${BPN}-crates_${PV}.inc
-
-S = "${WORKDIR}/git"
 
 INITSCRIPT_NAME = "${@bb.utils.contains('INIT_MANAGER', 'sysvinit', 'iaca-os-infos-daemon', '', d)}"
 INITSCRIPT_PARAMS = "${@bb.utils.contains('INIT_MANAGER', 'sysvinit', 'defaults', '', d)}"
@@ -31,7 +29,7 @@ do_install () {
     # Install SysVinit service script only if INIT_MANAGER is sysvinit
     if [ -n "${INITSCRIPT_NAME}" ]; then
         install -d ${D}${sysconfdir}/init.d
-        install -m 0755 ${WORKDIR}/iaca-os-infos-daemon.sysvinit "${D}${sysconfdir}/init.d/${INITSCRIPT_NAME}"
+        install -m 0755 ${UNPACKDIR}/iaca-os-infos-daemon.sysvinit "${D}${sysconfdir}/init.d/${INITSCRIPT_NAME}"
     fi
 }
 
