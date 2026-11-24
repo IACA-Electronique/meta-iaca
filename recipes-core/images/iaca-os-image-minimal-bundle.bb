@@ -20,11 +20,11 @@ RAUC_SLOT_rootfs[fstype] = "ext4"
 RAUC_SLOT_rootfs[rename] = "rootfs.ext4"
 
 # Development signing key (NEVER use these in production)
-# NOTE: bundle.bbclass runs 'rauc bundle' with cwd=${B}=${WORKDIR}/build, so the
-# paths must be absolute (${WORKDIR}) — relative names are resolved against
-# ${B} and fopen() fails with "No such file or directory".
-RAUC_KEY_FILE ?= "${WORKDIR}/development-1.key.pem"
-RAUC_CERT_FILE ?= "${WORKDIR}/development-1.cert.pem"
+RAUC_KEY_FILE ?= "${S}/development-1.key.pem"
+RAUC_CERT_FILE ?= "${S}/development-1.cert.pem"
+
+# Use the verity bundle format (silences the 'plain' default warning)
+RAUC_BUNDLE_FORMAT = "verity"
 
 # HOOKS
 # The hook executable is registered via [hooks] filename (mandatory when any

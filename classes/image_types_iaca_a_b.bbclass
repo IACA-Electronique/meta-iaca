@@ -42,7 +42,7 @@ IMAGE_CMD:iaca_a_b() {
 
         gunzip -c "$archive" > "${tmp_file}" || { echo "ERROR: Unable to uncompress '$archive'."; return 1; }
 
-        tar -xf "$tmp_file" "./cmdline.txt" || { echo "ERROR: Unable to extract cmdline.txt from '$archive'."; return 2; }
+        tar -xf "$tmp_file" --no-same-owner "./cmdline.txt" || { echo "ERROR: Unable to extract cmdline.txt from '$archive'."; return 2; }
 
         sed -i -E "s#root=[^ ]+#root=${root_part_device}#" cmdline.txt || { echo "ERROR: Unable to update 'root=' in cmdline.txt from '$archive'."; return 3; }
         if grep -q "rauc.slot=" cmdline.txt; then
@@ -51,7 +51,7 @@ IMAGE_CMD:iaca_a_b() {
           sed -i -E "1s/\$/ rauc.slot=${rauc_slot}/" cmdline.txt || { echo "ERROR: Unable to update 'rauc.slot=' in cmdline.txt from '$archive'."; return 4; }
         fi
 
-        tar -uf "$tmp_file" "./cmdline.txt" || { echo "ERROR: Unable to update cmdline.txt to '$archive'."; return 5; }
+        tar -uf "$tmp_file" --owner=root --group=root "./cmdline.txt" || { echo "ERROR: Unable to update cmdline.txt to '$archive'."; return 5; }
 
         gzip -c "$tmp_file" > "$archive" || { echo "ERROR: Unable compress '$archive'."; return 6; }
 

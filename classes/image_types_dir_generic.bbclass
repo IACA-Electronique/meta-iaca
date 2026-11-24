@@ -160,7 +160,7 @@ IMAGE_CMD:dir_generic() {
         esac
     done
 
-    tar -cvzf "${BOOT_TAR_GZ}" -C "${BOOT_DIR}" . || {
+    tar -cvzf "${BOOT_TAR_GZ}" --owner=root --group=root -C "${BOOT_DIR}" . || {
         bbfatal "Unable to create boot tar.gz at '${BOOT_TAR_GZ}'"
     }
     rm -fr "${BOOT_DIR}"
