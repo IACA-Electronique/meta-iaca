@@ -12,8 +12,6 @@ inherit cargo cargo-update-recipe-crates
 
 require ${BPN}-crates_${PV}.inc
 
-S = "${WORKDIR}/git"
-
 
 # Enable Rust binary to be built in release mode
 CARGO_BUILD_FLAGS:append = " -Znext-lockfile-bump"

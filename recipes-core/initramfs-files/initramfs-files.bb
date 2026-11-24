@@ -6,8 +6,6 @@ SRC_URI = " \
     file://iaca-splash.sh \
 "
 
-S = "${WORKDIR}"
-
 do_install() {
     install -d ${D}
 

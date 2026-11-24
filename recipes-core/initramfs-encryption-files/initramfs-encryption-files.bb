@@ -5,8 +5,6 @@ SRC_URI = " \
     file://init \
 "
 
-S = "${WORKDIR}"
-
 do_install() {
     install -d ${D}
 

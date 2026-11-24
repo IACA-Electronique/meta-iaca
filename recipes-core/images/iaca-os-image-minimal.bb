@@ -7,7 +7,6 @@ require recipes-core/images/core-image-minimal.bb
 
 
 EXTRA_IMAGE_FEATURES += " \
-    debug-tweaks \
     package-management \
 "
 

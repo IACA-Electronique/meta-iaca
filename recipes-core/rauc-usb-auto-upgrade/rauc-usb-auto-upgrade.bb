@@ -1,7 +1,7 @@
 SUMMARY = "RAUC USB Auto Upgrade Daemon - Monitors USB devices for RAUC update bundles"
 SECTION = "base"
 HOMEPAGE = "https://iaca-electronique.com"
-LICENSE = "GPLv3"
+LICENSE = "GPL-3.0-or-later"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"
 
 PR = "r0"
@@ -15,9 +15,6 @@ SRC_URI = " \
 # Inherit update-rc.d for init script support
 inherit update-rc.d allarch
 
-# Install the monitoring script and init script
-S = "${WORKDIR}"
-
 # Configuration for the partition label to look for
 # This can be overridden in local.conf or other configuration
 RAUC_USB_PLUGIN_PARTITION_LABEL ?= "RAUC_UPDATE"
@@ -25,11 +22,11 @@ RAUC_USB_PLUGIN_PARTITION_LABEL ?= "RAUC_UPDATE"
 do_install() {
     # Install monitoring script
     install -d ${D}${sbindir}
-    install -m 0755 ${S}/rauc-usb-auto-upgrade.sh ${D}${sbindir}/rauc-usb-auto-upgrade
+    install -m 0755 ${UNPACKDIR}/rauc-usb-auto-upgrade.sh ${D}${sbindir}/rauc-usb-auto-upgrade
 
     # Install init script
     install -d ${D}${sysconfdir}/init.d
-    install -m 0755 ${S}/rauc-usb-auto-upgrade.init ${D}${sysconfdir}/init.d/rauc-usb-auto-upgrade
+    install -m 0755 ${UNPACKDIR}/rauc-usb-auto-upgrade.init ${D}${sysconfdir}/init.d/rauc-usb-auto-upgrade
 
     # Create configuration directory
     install -d ${D}${sysconfdir}/rauc-usb-auto-upgrade
