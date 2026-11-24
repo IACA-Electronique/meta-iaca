@@ -9,14 +9,12 @@ SRC_URI = " \
     file://overlay.sh\
 "
 
-S = "${WORKDIR}"
-
 do_install() {
     install -d ${D}
 
-    install -m 0755 ${WORKDIR}/init ${D}/init
-    install -m 0755 ${WORKDIR}/iaca-splash.sh ${D}/iaca-splash.sh
-    install -m 0755 ${WORKDIR}/overlay.sh ${D}/overlay.sh
+    install -m 0755 ${UNPACKDIR}/init ${D}/init
+    install -m 0755 ${UNPACKDIR}/iaca-splash.sh ${D}/iaca-splash.sh
+    install -m 0755 ${UNPACKDIR}/overlay.sh ${D}/overlay.sh
 
     install -d ${D}/dev
     mknod -m 600 ${D}/dev/console c 5 1
