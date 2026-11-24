@@ -1,7 +1,7 @@
 SUMMARY = "IACA Watchdog - Rust-based system watchdog service"
 SECTION = "base"
 HOMEPAGE = "https://gitlab.iaca-electronique.com/iaca-os/system/iaca-os-watchdog"
-LICENSE = "GPLv3"
+LICENSE = "GPL-3.0-or-later"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0-or-later;md5=1c76c4cc354acaac30ed4d5eefea7245"
 
 # Git repository for the Rust source code
@@ -15,7 +15,7 @@ inherit cargo cargo-update-recipe-crates update-rc.d
 
 require ${BPN}-crates.inc
 
-S = "${WORKDIR}/git"
+#S = "${UNPACKDIR}/git"
 
 INITSCRIPT_NAME = "${@bb.utils.contains('INIT_MANAGER', 'sysvinit', 'iaca-os-watchdog', '', d)}"
 INITSCRIPT_PARAMS = "${@bb.utils.contains('INIT_MANAGER', 'sysvinit', 'defaults', '', d)}"
@@ -31,7 +31,7 @@ do_install () {
     # Install SysVinit service script only if INIT_MANAGER is sysvinit
     if [ -n "${INITSCRIPT_NAME}" ]; then
         install -d ${D}${sysconfdir}/init.d
-        install -m 0755 ${WORKDIR}/iaca-os-watchdog.sysvinit "${D}${sysconfdir}/init.d/iaca-os-watchdog"
+        install -m 0755 ${UNPACKDIR}/iaca-os-watchdog.sysvinit "${D}${sysconfdir}/init.d/iaca-os-watchdog"
     fi
 }
 
