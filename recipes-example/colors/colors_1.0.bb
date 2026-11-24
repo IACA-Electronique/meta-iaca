@@ -5,13 +5,14 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 SRC_URI = "file://colors.c"
 
-S = "${WORKDIR}"
+INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+INHIBIT_PACKAGE_STRIP = "0"
 
 do_compile() {
-    ${CC} ${CFLAGS} ${LDFLAGS} -o colors colors.c
+    ${CC} ${CFLAGS} ${LDFLAGS} -o ${UNPACKDIR}/colors ${UNPACKDIR}/colors.c
 }
 
 do_install() {
     install -d ${D}${bindir}
-    install -m 0755 colors ${D}${bindir}
+    install -m 0755 ${UNPACKDIR}/colors ${D}${bindir}
 }
