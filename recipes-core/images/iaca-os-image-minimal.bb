@@ -14,8 +14,9 @@ EXTRA_IMAGE_FEATURES += " \
 IMAGE_INSTALL:append = " kernel-modules dosfstools tar gzip"
 IMAGE_INSTALL:append = " bash raspi-utils util-linux hello-rust colors i2c-tools"
 IMAGE_INSTALL:append = " iaca-watchdog iaca-os-exec iaca-os-infos iaca-os-infos-daemon"
+IMAGE_INSTALL:append = " uplink-agent"
+
 IMAGE_DEPENDS:append = " overlay-initramfs-image"
-IMAGE_DEPENDS:append = " uplink-agent"
 
 # Machine-specific IMAGE_CLASSES and IMAGE_FSTYPES.
 # Must be parse-time assignments: image.bbclass consumes IMAGE_CLASSES via
