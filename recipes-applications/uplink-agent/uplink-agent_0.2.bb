@@ -23,13 +23,13 @@ do_install () {
     install -d ${D}${sbindir}
     install -m 0755 ${UNPACKDIR}/run.sh "${D}${sbindir}/${BPN}"
 
-    install -d ${D}${sysconfdir}/${BPN}
-    install -m 0644 ${UNPACKDIR}/config.env "${D}${sysconfdir}/${BPN}/.env"
-    install -m 0755 ${B}/target/${CARGO_TARGET_SUBDIR}/uplink-agent "${D}${sysconfdir}/${BPN}/uplink-agent"
+    install -d ${D}${datadir}/${BPN}
+    install -m 0644 ${UNPACKDIR}/config.env "${D}${datadir}/${BPN}/.env"
+    install -m 0755 ${B}/target/${CARGO_TARGET_SUBDIR}/uplink-agent "${D}${datadir}/${BPN}/uplink-agent"
 }
 
 # Prevent objcopy from trying to split debug symbols on Rust binaries
 INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
 INHIBIT_PACKAGE_STRIP = "1"
 
-FILES:${PN} = "${sbindir}/${BPN} ${sysconfdir}/${BPN} ${sysconfdir}/${BPN}/*"
+FILES:${PN} = "${sbindir}/${BPN} ${datadir}/${BPN} ${datadir}/${BPN}/*"

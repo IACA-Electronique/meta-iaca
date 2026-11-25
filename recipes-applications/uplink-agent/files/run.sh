@@ -1,7 +1,7 @@
 #!/bin/sh
 
-cd /var/lib/uplink
+cd /usr/share/uplink-agent
 
-exec uplink-agent
+exec ./uplink-agent
 
 exit $?
